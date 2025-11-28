@@ -1,0 +1,5 @@
+{
+  "name": "FlashTech",
+  "description": "Automated Enterprise IT News Platform using Gemini Flash-Lite and Search Grounding to deliver Zero-Latency technical briefs.",
+  "requestFramePermissions": []
+}
