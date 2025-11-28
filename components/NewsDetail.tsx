@@ -60,7 +60,7 @@ export const NewsDetail: React.FC<NewsDetailProps> = ({ article, onClose }) => {
                     <h3 className="font-mono font-bold uppercase tracking-wider text-xs">Critical Metric</h3>
                 </div>
                 <p className="text-xl sm:text-2xl font-light text-white relative z-10 leading-relaxed">
-                    {article.content.key_fact}
+                    {article.content?.key_fact || "Fact processing..."}
                 </p>
             </div>
 
@@ -70,16 +70,20 @@ export const NewsDetail: React.FC<NewsDetailProps> = ({ article, onClose }) => {
                     <Database className="w-4 h-4 mr-2" /> Technical Analysis
                 </h3>
                 <div className="space-y-4">
-                    {article.content.analysis_points.map((point, idx) => (
-                        <div key={idx} className="flex items-start group">
-                            <span className="flex-shrink-0 w-6 h-6 rounded bg-slate-800 group-hover:bg-blue-900/30 border border-slate-700 group-hover:border-blue-800/50 text-slate-400 group-hover:text-blue-400 flex items-center justify-center text-xs font-mono mr-3 mt-0.5 transition-colors">
-                                {idx + 1}
-                            </span>
-                            <p className="text-slate-300 leading-relaxed group-hover:text-slate-200 transition-colors">
-                                {point}
-                            </p>
-                        </div>
-                    ))}
+                    {article.content?.analysis_points && article.content.analysis_points.length > 0 ? (
+                        article.content.analysis_points.map((point, idx) => (
+                            <div key={idx} className="flex items-start group">
+                                <span className="flex-shrink-0 w-6 h-6 rounded bg-slate-800 group-hover:bg-blue-900/30 border border-slate-700 group-hover:border-blue-800/50 text-slate-400 group-hover:text-blue-400 flex items-center justify-center text-xs font-mono mr-3 mt-0.5 transition-colors">
+                                    {idx + 1}
+                                </span>
+                                <p className="text-slate-300 leading-relaxed group-hover:text-slate-200 transition-colors">
+                                    {point}
+                                </p>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-slate-600 italic">Analysis pending generation.</p>
+                    )}
                 </div>
             </div>
 

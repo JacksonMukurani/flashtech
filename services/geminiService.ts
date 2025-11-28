@@ -62,7 +62,6 @@ export const fetchNewsBrief = async (): Promise<NewsArticle> => {
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
         tools: [{ googleSearch: {} }],
-        // responseMimeType is NOT set because we are using googleSearch tool
       },
     });
 
@@ -78,6 +77,25 @@ export const fetchNewsBrief = async (): Promise<NewsArticle> => {
       console.error("Failed to parse JSON from Gemini response", text);
       throw new Error("Data formatting error: AI response was not valid JSON");
     }
+
+    // --- CRITICAL FIX: Validate Structure ---
+    // Sometimes the model might return a flat structure or miss the 'content' nesting.
+    if (!parsedData.content) {
+      console.warn("Gemini response missing 'content' field. Applying fallback structure.");
+      // Attempt to salvage flat properties if they exist, otherwise use placeholders
+      parsedData.content = {
+        key_fact: parsedData.key_fact || "Key technical specification unavailable.",
+        analysis_points: Array.isArray(parsedData.analysis_points) 
+          ? parsedData.analysis_points 
+          : ["Technical analysis pending."]
+      };
+    }
+    
+    // Ensure analysis_points is an array
+    if (!Array.isArray(parsedData.content.analysis_points)) {
+        parsedData.content.analysis_points = ["Analysis points pending."];
+    }
+    // ----------------------------------------
 
     // Extract grounding chunks for display (Critical for Legal/Copyright mitigation)
     const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
